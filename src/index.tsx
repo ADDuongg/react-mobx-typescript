@@ -1,15 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import App from './App';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Error from './component/error';
+import DetailProduct from './pages/detailProduct';
+import Wishlist from './pages/wishlist';
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/product/:id',
+    errorElement: <Error />,
+    element: <DetailProduct />
+  },
+  {
+    path: '/wishlist/',
+    errorElement: <Error />,
+    element: <Wishlist />
+  }
+])
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router}></RouterProvider>
   </React.StrictMode>
 );
 
