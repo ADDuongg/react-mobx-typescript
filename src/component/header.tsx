@@ -48,7 +48,7 @@ const Header = observer(() => {
             <div className="w-full bg-[#f8f8f8] flex justify-between">
                 <div className='w-11/12 mx-auto h-16 px-5 flex lg:justify-between justify-center'>
                     <div className='text-[#777777] my-auto w-1/3 lg:block hidden'>Need help? call us : (+92) 0123 456 789</div>
-                    <div className='text-[#777777] my-auto  w-1/3 text-center'>Today's deal sale 50% off <span className='text-red-600 font-bold ml-1'> SHOP NOW!</span></div>
+                    <div className='text-[#777777] my-auto  w-1/3 text-center'>Today's deal sale 50% off <Link to={'/shop'} className='text-red-600 font-bold ml-1 hover:opacity-70'> SHOP NOW!</Link></div>
                     <div className='text-[#777777] lg:flex hidden justify-end w-1/3 '>
                         <div className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
                             <i className="fa-regular fa-user"></i> Sign in
