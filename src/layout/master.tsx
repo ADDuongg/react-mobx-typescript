@@ -13,6 +13,7 @@ const Master = ({ children }: MasterProps) => {
         <storeContext.Provider value={mainStore}>
             <Header />
             {children}
+            
             <Footer />
         </storeContext.Provider>
     );

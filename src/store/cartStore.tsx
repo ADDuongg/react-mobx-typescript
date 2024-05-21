@@ -16,7 +16,10 @@ class CartStore {
     get totalPrice() {
         return this.carts.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     }
-
+    getTotalForProduct(productId: number) {
+        const item = this.carts.find(item => item.product.id === productId);
+        return item ? item.product.price * item.quantity : 0;
+    }
     closeCartModal() {
         this.isShow = false;
     }
@@ -26,7 +29,7 @@ class CartStore {
     }
 
     addToCart(product: ProductType, quantity: number) {
-        if (quantity <= 0) return;  
+        if (quantity <= 0) return;
         const existingItem = this.carts.find(item => item.product.id === product.id);
         if (existingItem) {
             existingItem.quantity += quantity;
@@ -41,13 +44,13 @@ class CartStore {
     }
 
     updateQuantity(productId: number, quantity: number) {
-        if (quantity < 0) return;  
+        if (quantity < 0) return;
         const item = this.carts.find(item => item.product.id === productId);
         if (item) {
             item.quantity = quantity;
         }
     }
-    
+
     clearCart() {
         this.carts = [];
     }

@@ -15,7 +15,7 @@ class WishListStore {
             console.log("Sản phẩm đã có trong danh sách mong muốn!");
         }
     }
-    
+
     removeFromWishList(item: ProductType): void {
         const index = this.wishList.findIndex(wishItem => wishItem.id === item.id);
         if (index !== -1) {
@@ -25,6 +25,13 @@ class WishListStore {
 
     isInWishList(item: ProductType): boolean {
         return this.wishList.some(wishItem => wishItem.id === item.id);
+    }
+    toggleWishList(item: ProductType): void {
+        if (this.isInWishList(item)) {
+            this.removeFromWishList(item);
+        } else {
+            this.addToWishList(item);
+        }
     }
 }
 

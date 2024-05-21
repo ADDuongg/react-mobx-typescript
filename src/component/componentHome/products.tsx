@@ -5,14 +5,19 @@ import { useStore } from '../../layout/master';
 import { ProductType } from '../../store/productStore';
 import { useNavigate } from 'react-router-dom';
 
-
-const Products = observer(() => {
+interface ProductsProps {
+    isMore: boolean,
+    setMore: React.Dispatch<React.SetStateAction<boolean>>,
+    more: boolean,
+    isGrid: boolean,
+    isLg: boolean
+}
+const Products: React.FC<ProductsProps> = observer((props) => {
     const { productStore, WishListStore, cartStore } = useStore();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
     const [img, handleSetImg] = useState<number>(0)
     const [quantity, setQuantity] = useState(1)
-    const [more, setMore] = useState<boolean>(false)
     const navigate = useNavigate()
     useEffect(() => {
         productStore.fetchProduct();
@@ -46,36 +51,62 @@ const Products = observer(() => {
         cartStore.addToCart(item, quantity)
         closeModal()
     };
-    
-    
+
+
     return (
         <>
-            <div className={`grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto w-full ${more ? 'h-auto ': 'h-96 overflow-hidden'} gap-10`}>
-                {toJS(productStore.products)?.map((item, index) => (
+            <div className={`${props.isGrid ? 'grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto' : 'flex flex-col justify-between  items-center'} w-full ${props.more ? 'h-auto ' : 'h-[25rem] overflow-hidden'} gap-10`}>
+                {toJS(productStore.filteredProducts)?.map((item, index) => (
                     <div
                         key={index}
-                        className="flex flex-col justify-between gap-5 h-[25rem] bg-white rounded-lg overflow-hidden relative group hover:opacity-80"
+                        className={`flex justify-between gap-5 h-[25rem] bg-white rounded-lg overflow-hidden relative group hover:opacity-80 ${props.isGrid ? 'flex-col' : 'w-full flex-row'}`}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
-                        <div className="w-full h-3/4">
+                        <div className={` h-3/4 ${props.isGrid ? 'w-full' : 'w-[40%]'}`}>
                             <img
                                 src={index === hoveredIndex ? item.images[1] : item.thumbnail}
                                 alt=""
-                                className="h-full w-full transition-opacity duration-300 hover:opacity-95 cursor-pointer"
-                                onClick={() => {navigate(`/product/${item.id}`)}}
+                                className={`h-full ${props.isGrid ? 'w-full' : 'w-full'} transition-opacity duration-300 hover:opacity-95 cursor-pointer`}
+                                onClick={() => { navigate(`/product/${item.id}`) }}
                             />
                         </div>
-                        <div className="flex h-1/4 flex-col items-center">
-                            <div>{item.title}</div>
-                            {item.discountPercentage ? (
-                                <div className='flex gap-x-5'>
-                                    <span style={{ textDecoration: 'line-through' }}><p >${item.price}</p></span>{' '}
-                                    <span className='text-red-600'>${calculateDiscountPrice(item.price, item.discountPercentage).toFixed(2)}</span>
+                        <div className={`flex h-1/4 flex-col ${props.isGrid ? 'w-auto items-center' : 'w-[60%] items-start mt-5 h-full justify-between'}`}>
+                            <div className='space-y-7'>
+                                <div className={`${props.isGrid ? '' : 'text-xl font-bold'}`}>{item.title}</div>
+                                {item.discountPercentage ? (
+                                    <div className='flex gap-x-5'>
+                                        <span style={{ textDecoration: 'line-through' }}><p >${item.price}</p></span>{' '}
+                                        <span className='text-red-600'>${calculateDiscountPrice(item.price, item.discountPercentage).toFixed(2)}</span>
+                                    </div>
+                                ) : (
+                                    item.price
+                                )}
+                                {!props.isGrid && (<div className='text-2xl'>{item.description}</div>)}
+                            </div>
+                            {!props.isGrid && (<div
+                                id="optionProduct"
+                                className=" flex gap-3 h-2/5 w-20  group-hover:left-7 transition-all duration-700"
+                            >
+                                <div className="bg-white w-10 h-10 border-2 flex justify-center items-center p-3 rounded-lg cursor-pointer hover:text-yellow-500">
+                                    <i className="fa-solid fa-cart-plus"></i>
                                 </div>
-                            ) : (
-                                item.price
-                            )}
+                                <div
+                                    className="bg-white w-10 h-10 border-2 flex justify-center items-center p-3 rounded-lg cursor-pointer hover:text-blue-500"
+                                    onClick={() => openModal(item)}
+                                >
+                                    <i className="fa-regular fa-eye"></i>
+                                </div>
+                                <div
+                                    id="optionProduct"
+                                    className="bg-white w-10 h-10 border-2 flex justify-center items-center p-3 rounded-lg cursor-pointer hover:text-red-600"
+                                    onClick={() => WishListStore.toggleWishList(item)}
+                                >
+                                    <i className={`${WishListStore.isInWishList(item) ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
+                                </div>
+
+                            </div>)}
+
                         </div>
 
                         {item.discountPercentage && (
@@ -84,7 +115,7 @@ const Products = observer(() => {
                             </div>
                         )}
 
-                        <div
+                        {props.isGrid && (<div
                             id="optionProduct"
                             className=" flex flex-col gap-3 h-2/5 w-20 absolute top-7 -left-10 group-hover:left-7 transition-all duration-700"
                         >
@@ -100,17 +131,18 @@ const Products = observer(() => {
                             <div
                                 id="optionProduct"
                                 className="bg-white w-10 h-10 border-2 flex justify-center items-center p-3 rounded-lg cursor-pointer hover:text-red-600"
-                                onClick={() => WishListStore.addToWishList(item)}
+                                onClick={() => WishListStore.toggleWishList(item)}
                             >
                                 <i className={`${WishListStore.isInWishList(item) ? 'fa-solid' : 'fa-regular'} fa-heart`}></i>
                             </div>
-                        </div>
+
+                        </div>)}
                     </div>
                 ))}
             </div>
-            <div className='w-full text-center font-bold cursor-pointer mt-5 flex items-center justify-center gap-3' onClick={() => setMore(prev => !prev)}>See more <i className={`text-red-600 font-bold fa-solid fa-chevron-${more ? 'up': 'down'}`}></i></div>
+            {!props.isMore && (<div className='w-full text-center font-bold cursor-pointer mt-5 flex items-center justify-center gap-3' onClick={() => props.setMore(prev => !prev)}>See more <i className={`text-red-600 font-bold fa-solid fa-chevron-${props.more ? 'up' : 'down'}`}></i></div>)}
 
-                {/* MODAL VIEW PRODUCT */}
+            {/* MODAL VIEW PRODUCT */}
             {selectedProduct && (
                 <div className='fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-75 flex items-center justify-center'>
                     <div className='bg-white p-5 rounded-lg w-3/5 h-5/6 overflow-auto relative'>

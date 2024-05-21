@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { ProductType } from '../store/productStore';
 import { observer } from 'mobx-react-lite';
+import ModalCart from '../modal/modalCart';
+import cartStore from '../store/cartStore';
 
 const DetailProduct = observer(() => {
     const { productStore, WishListStore } = useStore();
@@ -57,8 +59,8 @@ const DetailProduct = observer(() => {
         return () => clearInterval(intervalId);
     }, []);
 
-    
-    
+
+
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { value } = e.target;
         setQuantity(parseInt(value, 10));
@@ -85,8 +87,8 @@ const DetailProduct = observer(() => {
             <div className='w-full mt-16'>
                 <div className='w-11/12 mx-auto p-5 h-full flex gap-2 justify-start items-end'>
                     <div className='w-full h-auto  mt-10 '>
-                        <div className='w-full h-[45rem]  flex justify-between py-2'>
-                            <div className='w-[50%] h-full border p-5'>
+                        <div className='w-full lg:h-[45rem] h-auto flex lg:flex-row flex-col justify-between py-2'>
+                            <div className='lg:w-[50%] w-full h-full p-5'>
                                 <img src={detailProduct?.images[img]} className='h-5/6 w-full' alt="" />
                                 <div className="h-1/6 flex justify-between gap-3 w-full mt-5">
                                     {detailProduct?.images?.map((item, index) => (
@@ -97,7 +99,7 @@ const DetailProduct = observer(() => {
                                 </div>
                             </div>
                             {detailProduct && (
-                                <div className='w-[50%] h-full flex flex-col gap-5 justify-start pl-14'>
+                                <div className='lg:w-[50%] w-full h-full flex flex-col gap-5 justify-start pl-14'>
                                     <div className='font-bold text-5xl'>{detailProduct?.title}</div>
                                     <div className='text-red-600 font-bold flex'>
                                         <span>${calculateDiscountPrice(detailProduct?.price, detailProduct?.discountPercentage).toFixed(2)}</span>
@@ -154,11 +156,12 @@ const DetailProduct = observer(() => {
 
                                     <div className='flex flex-col w-full gap-5'>
                                         <div className='w-full flex justify-between gap-x-5'>
-                                            <button className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>ADD TO CART</button>
+                                            <button onClick={() => { detailProduct && cartStore.addToCart(detailProduct, quantity) }} className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>ADD TO CART</button>
+
                                             <button className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>BUY IT NOW</button>
                                         </div>
                                         <button
-                                            onClick={!WishListStore.isInWishList(detailProduct) ? () => detailProduct && WishListStore.addToWishList(detailProduct) : () => detailProduct && WishListStore.removeFromWishList(detailProduct) }
+                                            onClick={!WishListStore.isInWishList(detailProduct) ? () => detailProduct && WishListStore.addToWishList(detailProduct) : () => detailProduct && WishListStore.removeFromWishList(detailProduct)}
                                             className='w-full p-4 text-white rounded-xl bg-[#2c2b49]'
                                         >
                                             {WishListStore?.isInWishList(detailProduct) ? 'REMOVE WISHLIST' : 'ADD WISHLIST'}
@@ -237,6 +240,7 @@ const DetailProduct = observer(() => {
                     </div>
                 </div>
             </div>
+            {cartStore.isShow && <ModalCart />}
         </Master>
     );
 })

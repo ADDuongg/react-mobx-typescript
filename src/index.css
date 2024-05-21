@@ -3,21 +3,34 @@
 @tailwind utilities;
 
 
-.customContainer{
-    @apply w-11/12 mx-auto h-full px-5
+.customContainer {
+  @apply w-11/12 mx-auto h-full px-5
 }
 
 .animate-move {
-    position: absolute;
-    animation: move 6s linear infinite;
-  }
+  position: absolute;
+  animation: move 6s linear infinite;
+}
 
 @keyframes move {
-    0% {
-      left: 0;
-    }
-    100% {
-      left: 100%;
-    }
+  0% {
+    left: 0;
   }
-  
+
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%); /* Bắt đầu từ vị trí ngoài màn hình bên trái */
+  }
+  to {
+    transform: translateX(0); /* Kết thúc ở vị trí hiện tại */
+  }
+}
+
+.modal-bar {
+  animation: slideInFromLeft 0.3s ease-in-out;
+}

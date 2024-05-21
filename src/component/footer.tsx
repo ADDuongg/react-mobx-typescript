@@ -6,9 +6,9 @@ import mastercard from '../assets/card.png'
 import express from '../assets/express.png'
 const Footer = () => {
     return (
-        <div className=' bg-[#F8F8F8] w-full h-96 flex flex-col justify-between'>
-            <div className='w-11/12 px-5 mx-auto pr-20 h-full  pt-10 flex justify-between items-center'>
-                <div className='flex w-[15%] flex-col h-full justify-start gap-5'>
+        <div className=' bg-[#F8F8F8] w-full lg:h-96 h-auto flex flex-col justify-between'>
+            <div className='w-11/12 px-5 mb-8 mx-auto pr-20 md:h-full h-auto gap-8 pt-10 grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 grid-rows-1'>
+                <div className='flex w-full flex-col h-full justify-start gap-5 col-span-2'>
                     <div className='font-bold'>Contact us</div>
                     <div className='space-y-5'>
                         <div className='flex justify-start gap-x-3 items-center'>
@@ -68,17 +68,17 @@ const Footer = () => {
                     </div>
                 </div>
             </div>
-            <div className='w-full h-20 bg-[#2C2B49] py-3'>
-                <div className='w-11/12 h-full px-5 mx-auto flex justify-between text-white items-center'>
-                    <div className='w-auto'>© 2024, Ecommerce By SpacingtechTM</div>
-                    <div className='w-[50%] h-full flex justify-center'>
-                            <img src={logo} alt="" className='w-[10%] h-full' />
+            <div className='w-full lg:h-20 h-auto bg-[#2C2B49] py-3'>
+                <div className='w-11/12 lg:h-full h-auto px-5 mx-auto text-white grid lg:grid-cols-3 grid-cols-2 grid-rows-1 items-center justify-start'>
+                    <div className='w-full lg:col-span-1 col-span-2'>© 2024, Ecommerce By SpacingtechTM</div>
+                    <div className='w-full lg:h-full h-2/4 flex lg:justify-center justify-start'>
+                        <img src={logo} alt="" className='lg:w-[10%] w-[20%] lg:h-full ' />
                     </div>
-                    <div className='flex justify-between h-full w-[20%] text-white'>
-                        <img src={visa} alt="" />
-                        <img src={paypal} alt="" />
-                        <img src={mastercard} alt="" />
-                        <img src={express} alt="" />
+                    <div className='flex justify-between lg:h-full h-2/4 w-full text-white'>
+                        <img className='w-[25%] lg:h-full ' src={visa} alt="" />
+                        <img className='w-[25%] lg:h-full ' src={paypal} alt="" />
+                        <img className='w-[25%] lg:h-full ' src={mastercard} alt="" />
+                        <img className='w-[25%] lg:h-full ' src={express} alt="" />
                     </div>
                 </div>
             </div>
