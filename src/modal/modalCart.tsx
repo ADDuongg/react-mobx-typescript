@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../layout/master';
 import { toJS } from 'mobx';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ModalCart = observer(() => {
     const { cartStore } = useStore();
     const [isCheckOut, setIsCheckOut] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
-
+    const navigate = useNavigate()
     const handleChange = (productId: number, value: number) => {
         if (!isNaN(value) && value > 0) {
             cartStore.updateQuantity(productId, value);
@@ -78,7 +78,7 @@ const ModalCart = observer(() => {
                             <button
                                 disabled={isCheckOut || !agreedToTerms}
                                 className={`rounded-lg py-4 w-2/4 text-white ${isCheckOut || !agreedToTerms ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#2c2b49] hover:bg-red-600'}`}
-                                onClick={() => setIsCheckOut(true)}
+                                onClick={() => {setIsCheckOut(true); navigate('/checkout')}}
                             >
                                 CHECK OUT
                             </button>

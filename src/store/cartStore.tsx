@@ -14,12 +14,21 @@ class CartStore {
     }
 
     get totalPrice() {
-        return this.carts.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+        return this.carts.reduce((sum, item) => {
+            const price = item.product.price * (1 - item.product.discountPercentage / 100);
+            return sum + price * item.quantity;
+        }, 0);
     }
+
     getTotalForProduct(productId: number) {
         const item = this.carts.find(item => item.product.id === productId);
-        return item ? item.product.price * item.quantity : 0;
+        if (item) {
+            const price = item.product.price * (1 - item.product.discountPercentage / 100);
+            return price * item.quantity;
+        }
+        return 0;
     }
+
     closeCartModal() {
         this.isShow = false;
     }

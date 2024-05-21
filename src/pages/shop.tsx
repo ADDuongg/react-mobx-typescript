@@ -171,7 +171,7 @@ const Shop = observer(() => {
                             </div>
                         </div>
                     </div>
-                    <div className='lg:w-3/4 w-full pl-10'>
+                    <div className='lg:w-3/4 w-full lg:pl-10 pl-0'>
                         <div className='font-bold text-xl mb-5'>Products ({dataStock.inStock})</div>
                         <div className="my-5 w-full">
                             <img src="https://electon7-store.myshopify.com/cdn/shop/files/Untitled-1.jpg?v=1672209531&width=1920\" alt="" />

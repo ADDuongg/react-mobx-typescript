@@ -9,6 +9,9 @@ import DetailProduct from './pages/detailProduct';
 import Wishlist from './pages/wishlist';
 import Cart from './pages/cart';
 import Shop from './pages/shop';
+import Login from './pages/login';
+import Checkout from './pages/checkout';
+import ProtedtedRoute from './protedtedRoute';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -28,11 +31,21 @@ const router = createBrowserRouter([
   {
     path: '/cart/',
     errorElement: <Error />,
-    element: <Cart />
+    element: <ProtedtedRoute><Cart /></ProtedtedRoute>
   },
   {
     path: '/shop',
     element: <Shop />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+    errorElement: <Error />,
+  },
+  {
+    path: '/checkout',
+    element: <Checkout />,
     errorElement: <Error />,
   },
 ])

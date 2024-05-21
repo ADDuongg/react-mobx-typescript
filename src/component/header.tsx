@@ -7,16 +7,25 @@ import { ProductType } from '../store/productStore';
 import { observer } from 'mobx-react-lite';
 import { Link, useNavigate } from 'react-router-dom';
 import { toJS } from 'mobx';
+import cookie from 'cookiejs';
+import userStore from '../store/userStore';
 const Header = observer(() => {
     const { productStore, cartStore, WishListStore } = useStore();
     const [showBar, setShowBar] = useState<boolean>(false)
     const [showSearch, setShowSearch] = useState<boolean>(false)
     const [showCategory, setShowCategory] = useState<boolean>(false)
     const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
-    const [height, setHeight] = useState<number>(9)
     const openModal = (product: ProductType) => {
         setSelectedProduct(product);
     };
+    const checkUser = cookie.get('currentUser');
+    if (typeof checkUser === 'string') {
+        console.log(JSON.parse(checkUser));
+    } else {
+        console.log('currentUser không phải là chuỗi');
+    }
+
+
     useEffect(() => {
         productStore.fetchProduct();
     }, [productStore]);
@@ -50,9 +59,13 @@ const Header = observer(() => {
                     <div className='text-[#777777] my-auto w-1/3 lg:block hidden'>Need help? call us : (+92) 0123 456 789</div>
                     <div className='text-[#777777] my-auto  w-1/3 text-center'>Today's deal sale 50% off <Link to={'/shop'} className='text-red-600 font-bold ml-1 hover:opacity-70'> SHOP NOW!</Link></div>
                     <div className='text-[#777777] lg:flex hidden justify-end w-1/3 '>
-                        <div className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
-                            <i className="fa-regular fa-user"></i> Sign in
-                        </div>
+                        {checkUser ? (<button onClick={() => {userStore.logout(); navigate('/login')}}  className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
+                            <i className="fa-solid fa-right-from-bracket"></i> Log out
+                        </button>) : (
+                            <Link to={'/login'} className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
+                                <i className="fa-regular fa-user"></i> Sign in
+                            </Link>
+                        )}
 
                         <div onClick={() => navigate('/wishlist')} className='flex text-[#777777] items-center pl-5 gap-2 hover:text-red-600 cursor-pointer'>
                             <i className="fa-regular fa-heart"></i> Wishlist
@@ -66,7 +79,12 @@ const Header = observer(() => {
                         <i onClick={() => setShowBar(!showBar)} className="fa-solid fa-bars text-3xl lg:hidden block cursor-pointer hover:opacity-75"></i>
                         <div className='h-full  my-auto w-full'><img src={logo} alt="" className='h-20 w-20 cursor-pointer' onClick={() => navigate('/')} /></div>
                     </div>
-                    <i onClick={() => { cartStore.toggleCartModal() }} className="fa-solid fa-cart-shopping text-3xl lg:hidden block cursor-pointer hover:opacity-75"></i>
+                    <div className='relative'>
+                        <i onClick={() => { cartStore.toggleCartModal() }} className="fa-solid fa-cart-shopping text-3xl lg:hidden block cursor-pointer hover:opacity-75"></i>
+                        <div className='absolute bg-red-600 text-white flex lg:hidden justify-center items-center rounded-full px-2 py-0 left-5 bottom-5'>
+                            {cartStore.carts.length}
+                        </div>
+                    </div>
                     <div className='text-[#777777] lg:flex hidden w-1/3 my-auto justify-between'>
                         <div className='flex justify-between items-center cursor-pointer hover:text-red-600'>
                             <div onClick={() => navigate('/')} className='font-bold' >Home</div>
@@ -189,7 +207,7 @@ const Header = observer(() => {
                             <i className=" fa-solid fa-magnifying-glass absolute right-2 text-xl text-black cursor-pointer hover:text-red-600"></i>
 
                             {showSearch && (
-                                <div className={`flex flex-col justify-start gap-5 items-center absolute top-12 bg-white rounded-lg shadow-xl w-[31rem] text-black z-10 ${productStore.searchProducts.length === 0 ? 'p-0': 'p-5'} overflow-auto max-h-80`}>
+                                <div className={`flex flex-col justify-start gap-5 items-center absolute top-12 bg-white rounded-lg shadow-xl w-[31rem] text-black z-10 ${productStore.searchProducts.length === 0 ? 'p-0' : 'p-5'} overflow-auto max-h-80`}>
 
                                     {productStore.searchProducts?.map((item, index) => (
                                         <Link to={`/product/${item.id}`} key={index} id="divProductSearch" className={`flex justify-between w-full px-4 min-h-20  hover:opacity-90`}>

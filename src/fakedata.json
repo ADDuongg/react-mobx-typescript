@@ -1,0 +1,20 @@
+{
+    "accounts": [
+        {
+            "username": "nguyen duong",
+            "firstname": "nguyen",
+            "lastname": "duong",
+            "email": "duong@gmail.com",
+            "password": "123",
+            "role": "admin"
+        },
+        {
+            "username": "abc",
+            "firstname": "nguyen",
+            "lastname": "abc",
+            "email": "customer@gmail.com",
+            "password": "123",
+            "role": "user"
+        }
+    ]
+}

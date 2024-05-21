@@ -7,7 +7,7 @@ import ModalCart from '../modal/modalCart';
 
 const Cart = observer(() => {
     const navigate = useNavigate();
-    const { cartStore } = useStore();
+    const { cartStore, userStore } = useStore();
 
     const handleChange = (productId: number, value: number) => {
         if (!isNaN(value) && value > 0) {
@@ -15,7 +15,20 @@ const Cart = observer(() => {
         }
     };
     const handleSubmit = () => {
-        cartStore.carts.length === 0 ? alert('Bạn chưa có sản phầm nào trong giỏ hàng'): alert('Thanh toán thành công')
+        cartStore.carts.length === 0 ? alert('Bạn chưa có sản phầm nào trong giỏ hàng') : alert('Thanh toán thành công')
+    }
+    const handleCheckout = () => {
+        if (cartStore.carts.length === 0) {
+            alert('Bạn chưa có sản phầm trong giỏ hàng')
+            return
+        }
+        if (!userStore.currentUser.email) {
+            alert('Bạn phải đăng nhập mới có thể mua hàng')
+            return
+        }
+
+        navigate('/checkout')
+
     }
     return (
         <Master>
@@ -86,9 +99,9 @@ const Cart = observer(() => {
                                         </button>
                                     </div>
                                     <div className='lg:w-2/4 w-full flex justify-end'>
-                                    <Link to={'/shop'} className='lg:w-2/4 w-full bg-red-600  text-white text-center  rounded-lg hover:opacity-90  font-bold flex items-center justify-center h-14'>
-                                        RETURN TO STORE
-                                    </Link>
+                                        <Link to={'/shop'} className='lg:w-2/4 w-full bg-red-600  text-white text-center  rounded-lg hover:opacity-90  font-bold flex items-center justify-center h-14'>
+                                            RETURN TO STORE
+                                        </Link>
                                     </div>
                                 </div>
                                 <div className='w-full text-start text-xl font-bold mt-10'>
@@ -130,7 +143,7 @@ const Cart = observer(() => {
                                     <div className='font-bold text-xl'>Subtotal</div>
                                     <div className='font-bold text-red-600'>${cartStore.totalPrice} USD</div>
                                 </div>
-                                <button className='w-full bg-red-600 text-white rounded-lg px-20 py-5 hover:opacity-90'>CHECK OUT</button>
+                                <button type='submit' onClick={handleCheckout} className='w-full bg-red-600 text-white rounded-lg px-20 py-5 hover:opacity-90'>CHECK OUT</button>
                             </form>
                         </div>
                     </div>

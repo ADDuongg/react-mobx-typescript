@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Master, { useStore } from '../layout/master';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { toJS } from 'mobx';
 import { ProductType } from '../store/productStore';
 import { observer } from 'mobx-react-lite';
@@ -8,7 +8,7 @@ import ModalCart from '../modal/modalCart';
 import cartStore from '../store/cartStore';
 
 const DetailProduct = observer(() => {
-    const { productStore, WishListStore } = useStore();
+    const { productStore, WishListStore, userStore } = useStore();
     const params = useParams();
     const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
@@ -74,6 +74,14 @@ const DetailProduct = observer(() => {
     const calculateDiscountPrice = (price: number, discountPercentage: number): number => {
         return price - (price * discountPercentage) / 100;
     };
+    const handleBuy = () => {
+        const isLogin = userStore.currentUser.username
+        if(!isLogin){
+            alert('Bạn phải đăng nhập mới có thể mua hàng')
+        }
+        else{navigate('/checkout')
+        }
+    }
     return (
         <Master>
             <div className='w-full bg-[#f8f8f8]'>
@@ -158,7 +166,7 @@ const DetailProduct = observer(() => {
                                         <div className='w-full flex justify-between gap-x-5'>
                                             <button onClick={() => { detailProduct && cartStore.addToCart(detailProduct, quantity) }} className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>ADD TO CART</button>
 
-                                            <button className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>BUY IT NOW</button>
+                                            <button onClick={handleBuy} className='w-2/4 bg-red-600 p-4 text-white rounded-xl hover:bg-[#2c2b49]'>BUY IT NOW</button>
                                         </div>
                                         <button
                                             onClick={!WishListStore.isInWishList(detailProduct) ? () => detailProduct && WishListStore.addToWishList(detailProduct) : () => detailProduct && WishListStore.removeFromWishList(detailProduct)}

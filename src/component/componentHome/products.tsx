@@ -3,7 +3,7 @@ import { toJS } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../../layout/master';
 import { ProductType } from '../../store/productStore';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 interface ProductsProps {
     isMore: boolean,
@@ -13,7 +13,7 @@ interface ProductsProps {
     isLg: boolean
 }
 const Products: React.FC<ProductsProps> = observer((props) => {
-    const { productStore, WishListStore, cartStore } = useStore();
+    const { productStore, WishListStore, cartStore, userStore } = useStore();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<ProductType | null>(null);
     const [img, handleSetImg] = useState<number>(0)
@@ -51,28 +51,39 @@ const Products: React.FC<ProductsProps> = observer((props) => {
         cartStore.addToCart(item, quantity)
         closeModal()
     };
-
+    const handleBuy = () => {
+        const isLogin = userStore.currentUser.username
+        if (!isLogin) {
+            alert('Bạn phải đăng nhập mới có thể mua hàng')
+        }
+        else {
+            if (selectedProduct != null) {
+                cartStore.addToCart(selectedProduct, quantity)
+                navigate('/checkout')
+            }
+        }
+    }
 
     return (
         <>
-            <div className={`${props.isGrid ? 'grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto' : 'flex flex-col justify-between  items-center'} w-full ${props.more ? 'h-auto ' : 'h-[25rem] overflow-hidden'} gap-10`}>
+            <div className={`${props.isGrid ? 'grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto' : 'flex flex-col justify-between  items-center'} w-full ${props.more ? 'h-auto ' : 'h-[21rem] overflow-hidden'} gap-10`}>
                 {toJS(productStore.filteredProducts)?.map((item, index) => (
                     <div
                         key={index}
-                        className={`flex justify-between gap-5 h-[25rem] bg-white rounded-lg overflow-hidden relative group hover:opacity-80 ${props.isGrid ? 'flex-col' : 'w-full flex-row'}`}
+                        className={`flex justify-between gap-5 h-[20rem] bg-white rounded-lg overflow-hidden relative group hover:opacity-80 ${props.isGrid ? 'flex-col' : 'w-full flex-row'}`}
                         onMouseEnter={() => setHoveredIndex(index)}
                         onMouseLeave={() => setHoveredIndex(null)}
                     >
-                        <div className={` h-3/4 ${props.isGrid ? 'w-full' : 'w-[40%]'}`}>
+                        <div className={` h-full ${props.isGrid ? 'w-full' : 'lg:w-[40%] w-2/4'}`}>
                             <img
                                 src={index === hoveredIndex ? item.images[1] : item.thumbnail}
                                 alt=""
-                                className={`h-full ${props.isGrid ? 'w-full' : 'w-full'} transition-opacity duration-300 hover:opacity-95 cursor-pointer`}
+                                className={`min-h-52 ${props.isGrid ? 'w-full' : 'w-full'} transition-opacity duration-300 hover:opacity-95 cursor-pointer`}
                                 onClick={() => { navigate(`/product/${item.id}`) }}
                             />
                         </div>
-                        <div className={`flex h-1/4 flex-col ${props.isGrid ? 'w-auto items-center' : 'w-[60%] items-start mt-5 h-full justify-between'}`}>
-                            <div className='space-y-7'>
+                        <div className={`flex h-2/4 flex-col ${props.isGrid ? 'w-auto items-center' : 'lg:w-[60%] w-2/4 items-start mt-5 h-full justify-between'}`}>
+                            <div className='space-y-7 flex flex-col justify-start'>
                                 <div className={`${props.isGrid ? '' : 'text-xl font-bold'}`}>{item.title}</div>
                                 {item.discountPercentage ? (
                                     <div className='flex gap-x-5'>
@@ -86,7 +97,7 @@ const Products: React.FC<ProductsProps> = observer((props) => {
                             </div>
                             {!props.isGrid && (<div
                                 id="optionProduct"
-                                className=" flex gap-3 h-2/5 w-20  group-hover:left-7 transition-all duration-700"
+                                className=" flex gap-3 h-2/5 w-20 mt-12 group-hover:left-7 transition-all duration-700"
                             >
                                 <div className="bg-white w-10 h-10 border-2 flex justify-center items-center p-3 rounded-lg cursor-pointer hover:text-yellow-500">
                                     <i className="fa-solid fa-cart-plus"></i>
@@ -145,10 +156,10 @@ const Products: React.FC<ProductsProps> = observer((props) => {
             {/* MODAL VIEW PRODUCT */}
             {selectedProduct && (
                 <div className='fixed top-0 left-0 right-0 bottom-0 bg-gray-500 bg-opacity-75 flex items-center justify-center'>
-                    <div className='bg-white p-5 rounded-lg w-3/5 h-5/6 overflow-auto relative'>
+                    <div className='bg-white p-5 rounded-lg w-[65rem]  h-5/6 overflow-x-auto relative'>
                         <button onClick={closeModal} className='absolute right-5 top-5 font-bold hover:border p-2 w-10 h-10 hover:bg-gray-400 hover:text-white rounded-full'>X</button>
 
-                        <div className="flex justify-between w-full h-full p-5">
+                        <div className="flex justify-between w-[60rem] h-full p-5">
                             <div className='w-2/4 flex flex-col justify-start'>
                                 <div className='w-full h-4/6 border p-5'>
                                     <img src={selectedProduct.images[img]} alt="" className='w-full h-full' />
@@ -198,7 +209,7 @@ const Products: React.FC<ProductsProps> = observer((props) => {
 
                                     <div className={`flex gap-5 mt-7 justify-between`}>
                                         <button onClick={() => handleAddCart(selectedProduct, quantity)} className='text-white bg-red-600 p-4 rounded-xl flex-1 hover:bg-white hover:text-red-600 hover:border-red-600 border font-bold'>ADD TO CART</button>
-                                        <button className='text-white bg-red-600 p-4 rounded-xl flex-1 hover:bg-white hover:text-red-600 hover:border-red-600 border font-bold'>BUY IT NOW</button>
+                                        <button onClick={handleBuy} className='text-white bg-red-600 p-4 rounded-xl flex-1 hover:bg-white hover:text-red-600 hover:border-red-600 border font-bold'>BUY IT NOW</button>
 
                                     </div>
                                 </div>
