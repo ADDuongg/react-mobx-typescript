@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../layout/master';
 import { toJS } from 'mobx';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ModalCart = observer(() => {
+    const modalRef = useRef<HTMLDivElement>(null)
     const { cartStore } = useStore();
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                cartStore.closeCartModal();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [cartStore]);
     const [isCheckOut, setIsCheckOut] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const navigate = useNavigate()
@@ -17,7 +30,7 @@ const ModalCart = observer(() => {
 
     return (
         <div className='fixed top-0 left-0 right-0 bottom-0 w-screen h-screen bg-gray-500 bg-opacity-65 flex justify-end'>
-            <div className='h-full w-[28rem] bg-white p-8 flex flex-col'>
+            <div ref={modalRef} className='h-full w-[28rem] bg-white p-8 flex flex-col'>
                 <div className='flex justify-between w-full pb-2 border-b'>
                     <div className='font-bold text-xl'>My shopping cart</div>
                     <button onClick={() => cartStore.closeCartModal()} className='font-bold hover:border p-2 w-10 h-10 hover:bg-gray-400 hover:text-white rounded-full'>X</button>
@@ -36,7 +49,7 @@ const ModalCart = observer(() => {
                     <div className='mt-32 flex w-full flex-col items-center gap-5'>
                         <i className="fa-solid fa-cart-shopping text-xl"></i>
                         <div className='font-bold text-xl'>Your cart is empty</div>
-                        <Link onClick={() => {cartStore.toggleCartModal()}} to={'/shop'} className='rounded-xl bg-red-600 text-white px-20 py-5' >
+                        <Link onClick={() => { cartStore.toggleCartModal() }} to={'/shop'} className='rounded-xl bg-red-600 text-white px-20 py-5' >
                             CONTINUE SHOPPING
                         </Link>
                     </div>
@@ -78,7 +91,7 @@ const ModalCart = observer(() => {
                             <button
                                 disabled={isCheckOut || !agreedToTerms}
                                 className={`rounded-lg py-4 w-2/4 text-white ${isCheckOut || !agreedToTerms ? 'bg-gray-500 cursor-not-allowed' : 'bg-[#2c2b49] hover:bg-red-600'}`}
-                                onClick={() => {setIsCheckOut(true); navigate('/checkout')}}
+                                onClick={() => { setIsCheckOut(true); navigate('/checkout') }}
                             >
                                 CHECK OUT
                             </button>

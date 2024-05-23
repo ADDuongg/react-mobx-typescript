@@ -78,7 +78,7 @@ const Products: React.FC<ProductsProps> = observer((props) => {
                             <img
                                 src={index === hoveredIndex ? item.images[1] : item.thumbnail}
                                 alt=""
-                                className={`min-h-52 ${props.isGrid ? 'w-full' : 'w-full'} transition-opacity duration-300 hover:opacity-95 cursor-pointer`}
+                                className={` ${props.isGrid ? 'w-full min-h-56' : 'w-full h-full'} transition-opacity duration-300 hover:opacity-95 cursor-pointer`}
                                 onClick={() => { navigate(`/product/${item.id}`) }}
                             />
                         </div>

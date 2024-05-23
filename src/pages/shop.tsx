@@ -12,7 +12,7 @@ const Shop = observer(() => {
     const { productStore } = useStore();
     const navigate = useNavigate();
 
-    const [priceFilter, setPriceFilter] = useState<number>(0);
+    const [priceFilter, setPriceFilter] = useState<number>(1749);
     const [grid, setGrid] = useState<boolean>(true)
 
     const groupByCategory = (products: ProductType[]): { category: string, count: number }[] => {

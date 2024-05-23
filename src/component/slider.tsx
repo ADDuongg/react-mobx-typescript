@@ -59,7 +59,7 @@ function SimpleSlider() {
         slidesToScroll: 1
     };
     return (
-        <div className="slider-container w-full">
+        <div className="slider-container w-full ">
             <Slider {...settings}>
                 {slideData.map((slide, index) => (
                     <CustomSlide key={index} slide={slide} />

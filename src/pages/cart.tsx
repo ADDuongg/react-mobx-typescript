@@ -42,7 +42,7 @@ const Cart = observer(() => {
 
             <div className='w-full mt-16'>
                 <div className='w-11/12 mx-auto p-5 h-full flex gap-2 justify-start items-end'>
-                    <div className='w-full h-auto lg:p-20 p-10'>
+                    <div className='w-full h-auto lg:p-20 p-0'>
                         <div className="flex lg:flex-row flex-col justify-between w-full gap-10">
                             <div className='lg:w-[60%] w-full h-full flex flex-col items-center'>
                                 <div className='font-bold text-xl'>CONGRATULATIONS, YOU'VE GOT FREE SHIPPING!</div>

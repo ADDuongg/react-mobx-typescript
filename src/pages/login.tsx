@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import Master, { useStore } from '../layout/master';
 import { Link, useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import ModalCart from '../modal/modalCart';
 
 
 const Login = observer(() => {
     const navigate = useNavigate();
-    const { userStore } = useStore()
+    const { userStore, cartStore } = useStore()
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,8 +35,8 @@ const Login = observer(() => {
                 <div><i className="fa-solid fa-right-long"></i></div>
                 <div className='text-red-600'>Account</div>
             </div>
-            <div className='w-[80%] mx-auto h-auto flex justify-center items-center my-8'>
-                <div className='w-2/4 mx-auto border flex flex-col justify-between items-center px-14 py-14 gap-10'>
+            <div className='lg:w-[80%] w-full mx-auto h-auto flex justify-center items-center my-8'>
+                <div className='lg:w-2/4 w-[80%] mx-auto border flex flex-col justify-between items-center px-14  py-14 gap-10'>
                     <div className='font-bold text-6xl'>Login</div>
                     <div className='text-black text-xl'>Please login below account detail</div>
                     <div className='w-full space-y-5'>
@@ -73,6 +74,7 @@ const Login = observer(() => {
                     </div>
                 </div>
             </div>
+            {cartStore.isShow && <ModalCart/>}
         </Master>
     );
 });

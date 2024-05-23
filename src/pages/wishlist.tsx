@@ -20,9 +20,9 @@ const Wishlist = observer(() => {
     };
     return (
         <Master>
-            <div className='w-11/12 mx-auto p-5'>
+            <div className='w-11/12 mx-auto p-5 '>
                 {WishListStore.wishList.length === 0 && (<div className=' text-2xl'>Your wishlist is empty <Link to={'/shop'} className='underline cursor-pointer'>return to store</Link></div>)}
-                <div className={`grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto w-full h-96  gap-10`}>
+                <div className={`grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 auto-rows-auto w-full h-auto  gap-10`}>
                     {toJS(WishListStore?.wishList)?.map((item, index) => (
                         <div
                             key={index}

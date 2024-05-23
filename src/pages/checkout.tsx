@@ -4,8 +4,7 @@ import { useStore } from '../layout/master';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { observer } from 'mobx-react-lite';
-const Checkout = observer(
-    () => {
+const Checkout = observer(() => {
         const { userStore, cartStore } = useStore();
         const shippingCost = 19.22;
 
@@ -20,7 +19,6 @@ const Checkout = observer(
                 'Your order has been placed successfully.',
                 'success'
             );
-
         };
         return (
             <div className='w-full h-full flex flex-col justify-between'>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import logo from '../assets/logo.png'
 
 import { useStore } from '../layout/master';
@@ -18,6 +18,7 @@ const Header = observer(() => {
     const openModal = (product: ProductType) => {
         setSelectedProduct(product);
     };
+    const searchRef = useRef<HTMLDivElement>(null)
     const checkUser = cookie.get('currentUser');
     if (typeof checkUser === 'string') {
         console.log(JSON.parse(checkUser));
@@ -25,7 +26,17 @@ const Header = observer(() => {
         console.log('currentUser không phải là chuỗi');
     }
 
-
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+                setShowSearch(!showSearch)
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showSearch])
     useEffect(() => {
         productStore.fetchProduct();
     }, [productStore]);
@@ -59,7 +70,7 @@ const Header = observer(() => {
                     <div className='text-[#777777] my-auto w-1/3 lg:block hidden'>Need help? call us : (+92) 0123 456 789</div>
                     <div className='text-[#777777] my-auto  w-1/3 text-center'>Today's deal sale 50% off <Link to={'/shop'} className='text-red-600 font-bold ml-1 hover:opacity-70'> SHOP NOW!</Link></div>
                     <div className='text-[#777777] lg:flex hidden justify-end w-1/3 '>
-                        {checkUser ? (<button onClick={() => {userStore.logout(); navigate('/login')}}  className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
+                        {checkUser ? (<button onClick={() => { userStore.logout(); navigate('/login') }} className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
                             <i className="fa-solid fa-right-from-bracket"></i> Log out
                         </button>) : (
                             <Link to={'/login'} className='flex text-[#777777] my-auto items-center gap-2 border-r border-r-[#777777] cursor-pointer pr-5 hover:text-red-600'>
@@ -207,7 +218,7 @@ const Header = observer(() => {
                             <i className=" fa-solid fa-magnifying-glass absolute right-2 text-xl text-black cursor-pointer hover:text-red-600"></i>
 
                             {showSearch && (
-                                <div className={`flex flex-col justify-start gap-5 items-center absolute top-12 bg-white rounded-lg shadow-xl w-[31rem] text-black z-10 ${productStore.searchProducts.length === 0 ? 'p-0' : 'p-5'} overflow-auto max-h-80`}>
+                                <div ref={searchRef} className={`flex flex-col justify-start gap-5 items-center absolute top-12 bg-white rounded-lg shadow-xl w-[31rem] text-black z-10 ${productStore.searchProducts.length === 0 ? 'p-0' : 'p-5'} overflow-auto max-h-80`}>
 
                                     {productStore.searchProducts?.map((item, index) => (
                                         <Link to={`/product/${item.id}`} key={index} id="divProductSearch" className={`flex justify-between w-full px-4 min-h-20  hover:opacity-90`}>
